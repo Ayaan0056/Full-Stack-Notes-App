@@ -3,32 +3,48 @@ import statusCode from "../../config/statusCodes.js";
 
 export const sortNote = async (req, res) => {
     try {
-        const {userId} = req.body;
-        const sortCriteria = {
-            [req.query.sortField]: req.query.sortOrder === "asc" ? 1 : -1,
-        };
+        const validSortFields = ["title", "content", "createdAt"];
+        const validSortOrder = ["asc", "desc"]
+        const { userId } = req.body;
+        const { sortField, sortOrder } = req.query;
 
-        const response = await notesSchema.find({ userId }).sort(sortCriteria);
-
-        if (response.length > 0) {
-            return res.status(statusCode.OK).json({
-                success: true,
-                message: "Notes sorted successfully",
-                data: response,
-            });
-        }
-        else {
+        if (!validSortFields.includes(sortField)) {
             return res.status(statusCode.NOT_FOUND).json({
                 success: false,
-                message: "Note not found",
+                message: "Invalid sort field"
             });
         }
 
+        if (!validSortOrder.includes(sortOrder)) {
+            return res.status(statusCode.NOT_FOUND).json({
+                success: false,
+                message: "Invalid sort order"
+            });
+        }
+
+        const sortCriteria = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+
+        const sortedData = await notesSchema.find({ userId: userId }).sort(sortCriteria);
+
+        if (sortedData.length > 0) {
+            return res.status(statusCode.OK).json({
+                success: true,
+                data: sortedData,
+                message: "Data sorted and fetched successfully"
+            });
+        } else {
+            return res.status(statusCode.NOT_FOUND).json({
+                success: false,
+                message: "No data found"
+            });
+        }
     }
     catch (error) {
         return res.status(statusCode.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "error occured" + error
+            error: error.message,
+            message: "Error occured"
         })
     }
+
 }

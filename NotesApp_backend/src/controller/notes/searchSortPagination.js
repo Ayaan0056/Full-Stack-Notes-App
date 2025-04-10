@@ -12,10 +12,11 @@ export const searchSortPagination = async(req, res) => {
                 message : "user not found"
             })
         }
+
         //Building the query
         const query = {
             userId: userId,
-            ...(searchText && { title: { $regex: searchText, $options: 'i' } }) // Case-insensitive search
+            ...(searchText && { title: { $regex: searchText, $options: 'i' } }) 
         };
 
         const sortOptions = {};
@@ -26,18 +27,28 @@ export const searchSortPagination = async(req, res) => {
 
         const totalNotes = await notesSchema.countDocuments(query);
 
-        return res.status(statusCode.OK).json({
-            success : true,
-            message : "Notes fetched successfully",
-            response : response,
-            totalPages : Math.ceil(totalNotes/limit),
-            currentPage : page,
-            totalNotes : totalNotes
-        })
+        if(totalNotes > 0){
+            return res.status(statusCode.OK).json({
+                success : true,
+                message : "Notes fetched successfully",
+                response : response,
+                totalPages : Math.ceil(totalNotes/limit),
+                currentPage : page,
+                totalNotes : totalNotes
+            })
+        }
+        else {
+            return res.status(statusCode.NOT_FOUND).json({
+                success : false,
+                message : "Notes not found"
+            })
+        }
+        
     }catch(error){
         return res.status(statusCode.INTERNAL_SERVER_ERROR).json({
             success : false,
-            message : "error occured: "+ error
+            error : error,
+            message : "Error occured"
         })
     }
 }
