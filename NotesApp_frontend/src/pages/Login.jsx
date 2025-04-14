@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 import userValidationSchema from "../validators/userValidation.js";
 import Navbar from "../components/NavBar.jsx";
 const Login = () => {
     const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(userValidationSchema) });
+    const navigate = useNavigate();
 
     async function onSubmit(data) {
         console.log("data: ", data);
@@ -24,6 +26,9 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken)
                 localStorage.setItem("refreshToken", response.data.refreshToken)
                 localStorage.setItem("userId", response.data.data.userId)
+
+                console.log("reached")
+                navigate("/dashboard")
             }
 
         } catch (error) {
