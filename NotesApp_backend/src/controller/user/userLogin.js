@@ -1,76 +1,78 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import statusCode from "../../config/statusCodes.js";
 import sessionSchema from "../../models/sessionSchema.js";
 import userSchema from "../../models/userSchema.js";
 
-export const userLogin = async(req, res) => {
+export const userLogin = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        const response = await userSchema.findOne({email : email});
+        const { email, password } = req.body;
+        const response = await userSchema.find({ email: email });
 
-        if(response.length === 0)
-        {
+        console.log("response: ", response);
+
+        // Check if user exists
+        if (response.length === 0) {
             return res.status(statusCode.BAD_REQUEST).json({
-                success : false,
-                message : "user not found"
-            })
+                success: false,
+                message: "User  not found"
+            });
         }
-        else if(response.isVerified === false)
-        {
+
+        const user = response[0]; // Get the first user from the array
+
+        // Check if user is verified
+        if (user.isVerified === false) {
             return res.status(statusCode.UNAUTHORIZED).json({
-                success : false,
-                message : "please complete email verification"
-            })
+                success: false,
+                message: "Please complete email verification"
+            });
         }
-        else
-        {
-            const userId = response._id;
-            const data = await sessionSchema.find({userId : userId});
 
-            if(data.length > 0)
-            {
-                return res.status(statusCode.BAD_REQUEST).json({
-                    success : false,
-                    message : "session is already active"
-                })
-            }
-            else{
-                const isMatch = await bcrypt.compare(password, response.password);
-                if(!isMatch)
-                {
-                    return res.status(statusCode.UNAUTHORIZED).json({
-                        success : false,
-                        message : "unauthorized"
-                    })
-                }
-                else
-                {
-                    const session = await sessionSchema.create({userId : userId});
+        const userId = user._id; // Get user ID
 
-                    const accessToken = jwt.sign({id: userId}, process.env.SECRET_KEY, {expiresIn: process.env.ACCESS_TOKEN_TIME})
-                    const refreshToken = jwt.sign({id: userId}, process.env.SECRET_KEY, {expiresIn: process.env.REFRESH_TOKEN_TIME})
-                    
-                    return res.status(statusCode.OK).json({
-                        success : true,
-                        message : "user logged in successfully",
-                        accessToken : accessToken,
-                        refreshToken : refreshToken,
-                        data: {
-                            userId : userId,
-                            email: email
-                        }
-                    })
-                }
-            }
+        // Check for active session
+        const data = await sessionSchema.find({ userId: userId });
+        console.log("data: ", data);
+        if (data.length > 0) {
+            return res.status(statusCode.BAD_REQUEST).json({
+                success: false,
+                message: "Session is already active"
+            });
         }
-    }
-    catch(error) {
-        console.log("Error Occured: ", error);
+
+        // Compare password
+        const isMatch = await bcrypt.compare(password, user.password); // Use user.password
+        if (!isMatch) {
+            return res.status(statusCode.UNAUTHORIZED).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        // Create a new session
+        const session = await sessionSchema.create({ userId: userId });
+
+        // Generate tokens
+        const accessToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: process.env.ACCESS_TOKEN_TIME });
+        const refreshToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: process.env.REFRESH_TOKEN_TIME });
+
+        return res.status(statusCode.OK).json({
+            success: true,
+            message: "User  logged in successfully",
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            data: {
+                userId: userId,
+                email: email
+            }
+        });
+    } catch (error) {
+        console.log("Error Occurred: ", error);
         return res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-            success : false,
-            message : "Error Occured: " + error
+            success: false,
+            message: "Error Occurred: " + error
         });
     }
 };
