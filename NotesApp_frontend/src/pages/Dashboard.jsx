@@ -10,7 +10,7 @@ const Dashboard = () => {
                 <h1>user dashboard</h1>
             </div>
         </>
-        )
+    )
 }
 
 export default Dashboard;

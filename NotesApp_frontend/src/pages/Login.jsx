@@ -27,7 +27,6 @@ const Login = () => {
                 localStorage.setItem("refreshToken", response.data.refreshToken)
                 localStorage.setItem("userId", response.data.data.userId)
 
-                console.log("reached")
                 navigate("/dashboard")
             }
 
