@@ -12,10 +12,8 @@ const Login = () => {
     const navigate = useNavigate();
 
     async function onSubmit(data) {
-        console.log("data: ", data);
         try {
             const response = await axios.post("http://localhost:8000/user/login", data);
-            console.log("response: ", response);
 
             if (response.data.success === false) {
                 toast.error(response.data.message);
