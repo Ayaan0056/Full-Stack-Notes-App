@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
-const NoteCard = ({title, content}) => {
+import GetNote from "./GetNote";
+
+const NoteCard = ({ noteId, title, content }) => {
+    const [isModalOpen, setModalOpen] = useState(false);
+
     async function editNote() {
         console.log("Edit Button clicked");
     }
@@ -9,9 +13,13 @@ const NoteCard = ({title, content}) => {
         console.log("Delete Button clicked");
     }
 
+    const handleCardClick = () =>{
+        setModalOpen(true)
+    }
+
     return (
         <>
-            <div className="flex flex-col bg-white rounded-lg shadow-lg  w-[257px] p-[30px] h-[220px] justify-between items-center">
+            <div onClick={handleCardClick} className="flex flex-col bg-white rounded-lg shadow-lg  w-[257px] p-[30px] h-[220px] justify-between items-center">
                 <div className="w-full">
                     <p className="text-center font-semibold font-man text-md cursor-default line-clamp-1 overflow-hidden break-words text-ellipsis mb-2">
                         {title}
@@ -36,8 +44,60 @@ const NoteCard = ({title, content}) => {
                     </button>
                 </div>
             </div>
+
+            <GetNote 
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+                noteId={noteId}
+                title={title}
+                content={content}
+            />
         </>
     );
+
+
+    
+
+    // return (
+    //     <>
+    //         <div
+    //             className="flex flex-col bg-white rounded-lg shadow-lg w-[257px] p-[30px] h-[220px] justify-between items-center cursor-pointer"
+    //             onClick={handleCardClick}
+    //         >
+    //             <div className="w-full">
+    //                 <p className="text-center font-semibold font-man text-md cursor-default line-clamp-1 overflow-hidden break-words text-ellipsis mb-2">
+    //                     {title}
+    //                 </p>
+
+    //                 <p className="text-center font-semibold font-man text-md cursor-default line-clamp-3 overflow-hidden break-words text-ellipsis">
+    //                     {content}
+    //                 </p>
+    //             </div>
+    //             <div className="w-full flex justify-between">
+    //                 <button
+    //                     onClick={editNote}
+    //                     className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2 text-center cursor-pointer"
+    //                 >
+    //                     Edit
+    //                 </button>
+    //                 <button
+    //                     onClick={deleteNote}
+    //                     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2 text-center cursor-pointer"
+    //                 >
+    //                     Delete
+    //                 </button>
+    //             </div>
+    //         </div>
+    //         <GetNote
+    //             isOpen={isModalOpen}
+    //             onClose={() => setModalOpen(false)}
+    //             noteId={noteId}
+    //             noteTitle={title}
+    //             noteContent={content}
+    //         />
+    //     </>
+    // );
+
 };
 
 export default NoteCard;

@@ -2,43 +2,63 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 
-import NoteCard from "./NoteCard";
+import Modal from "./Modal";
 
-const GetNote = () => {
-    // const [note, setNote] = useState([]);
+const GetNote = ({ isOpen, onClose, noteId, title, content }) => {
+    console.log('onclose: ',onClose)
+    const fetchNote = async () => {
+        const accessToken = localStorage.getItem('accessToken')
+        
+        try {
+            const response = await axios.get(`http://localhost:8000/note/getOneNote/${noteId}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+            console.log('response: ', response)
+            
+        }
+        catch (error) {
+            console.log("error occured: ", error)
+            toast.error(error.response.data.message)
+        }
+    }
 
-    // const getUserNote = async () => {
-    //     try {
-    //         const accessToken = localStorage.getItem('accessToken');
+    if(isOpen){
+        fetchNote()
+    }
 
-    //         const response = await axios.get("http://localhost:8000/note/getAllNote", {
-    //             headers: {
-    //                 Authorization: `Bearer ${accessToken}`
-    //             }
-    //         });
-    //         setNote(response.data.data);
-
-    //     } catch (error) {
-    //         console.error("Error occurred: ", error);
-    //         toast.error("Error occurred in fetching user notes");
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     getUserNote();
-    // }, []);
+    const GetModal = ({ isOpen, onClose }) => {
+        return (
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <div className="flex flex-col gap-5">
+              <h2 className="text-lg font-bold">Note</h2>
+              <form action="#">
+                <div className="flex flex-col gap-5">
+                  <input
+                    type="text"
+                    className="ps-2 min-w-[28vw] min-h-[5vh]"
+                    defaultValue={title}
+                    readOnly
+                  />
+    
+                  <textarea
+                    aria-label="Post Content"
+                    type="text"
+                    className="min-h-[20vh] min-w-[28vw] p-5 placeholder:text-2xl text-2xl"
+                    defaultValue={content}
+                    readOnly
+                  />
+                </div>
+              </form>
+            </div>
+          </Modal>
+        );
+      };
 
     return (
         <>
-            {
-                note.map((element, index) => (
-                    <NoteCard
-                        key={index}
-                        title={element.title}
-                        content={element.content}
-                    />
-                ))
-            }
+            <GetModal isOpen={isOpen} onClose={onClose} />
             <Toaster />
         </>
     );

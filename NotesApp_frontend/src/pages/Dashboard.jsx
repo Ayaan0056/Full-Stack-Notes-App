@@ -12,6 +12,7 @@ export const userNotes = () => {
     return useContext(NotesContext);
 }
 
+
 const Dashboard = () => {
     const [note, setNote] = useState([]);
 
@@ -51,6 +52,7 @@ const Dashboard = () => {
                                 note.map((element, index) => (
                                     <NoteCard
                                         key={index}
+                                        noteId = {element._id}
                                         title={element.title}
                                         content={element.content}
                                     />

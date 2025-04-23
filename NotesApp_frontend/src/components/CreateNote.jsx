@@ -4,13 +4,14 @@ import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 
 import { userNotes } from "../pages/Dashboard";
+import Modal from "../components/Modal";
 
 const CreateNote = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm()
 
   //using context API from dashboard
-  const {note, setNote} = userNotes();
+  const { note, setNote } = userNotes();
 
   const accessToken = localStorage.getItem('accessToken')
 
@@ -22,7 +23,7 @@ const CreateNote = () => {
         }
       });
       console.log("rcn: ", response)
-      if (response.data.success === true){
+      if (response.data.success === true) {
         toast.success(response.data.message || 'Note successfully created');
         setNote([...note, response.data.data])
         reset();
@@ -37,32 +38,6 @@ const CreateNote = () => {
       toast.error(error.response.data.message)
     }
   }
-
-  const Modal = ({ isOpen, onClose, children }) => {
-    if (!isOpen) {
-      return null;
-    }
-
-    return (
-      <>
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6    relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={onClose}>
-
-              <img
-                className="h-8 w-8"
-                src="src/assets/closeIcon.jpg"
-                alt="Close"
-              />
-            </button>
-            {children}
-          </div>
-        </div>
-      </>
-    );
-  };
 
   const CreateModal = ({ isOpen, onClose }) => {
     return (
