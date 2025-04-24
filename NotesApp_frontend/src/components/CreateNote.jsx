@@ -25,9 +25,9 @@ const CreateNote = () => {
       console.log("rcn: ", response)
       if (response.data.success === true) {
         toast.success(response.data.message || 'Note successfully created');
-        
+
         setNote([...note, response.data.data])
-        
+
         reset();
         setModalOpen(false);
       }

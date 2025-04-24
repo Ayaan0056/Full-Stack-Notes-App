@@ -28,6 +28,8 @@ const DeleteNote = ({ isOpen, onClose, noteId }) => {
             if (response.data.success) {
                 toast.success(response.data.message);
                 
+                onClose()
+                
                 //setting up the useContext Notes 
                 setNote(note.filter((element) =>  element._id !== noteId ))
             }
