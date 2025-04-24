@@ -12,7 +12,6 @@ const NoteCard = ({ noteId, title, content }) => {
     async function editNote(e) {
         // Stopping from bubbling up to the parent div
         e.stopPropagation();
-        console.log("Edit Button clicked");
 
         setEditModalOpen(true);
     }
@@ -20,7 +19,6 @@ const NoteCard = ({ noteId, title, content }) => {
     async function deleteNote(e) {
         // Stopping from bubbling up to the parent div
         e.stopPropagation();
-        console.log("Delete Button clicked");
 
         setDeleteModalOpen(true);
 
