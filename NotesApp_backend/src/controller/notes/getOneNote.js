@@ -6,9 +6,9 @@ export const getOneNote = async(req, res) => {
         const {id} = req.params;
         const {userId} = req.body;
         
-        const note = await notesSchema.find({_id : id, userId : userId}).populate('userId');;
+        const note = await notesSchema.findOne({_id : id, userId : userId}).populate('userId');;
 
-        if(note.length != 0){
+        if(note){
             return res.status(statusCode.OK).json({
                 success : true,
                 message : "Note successfully fetched",

@@ -4,9 +4,10 @@ import notesSchema from "../../models/notesSchema.js";
 
 export const updateNote = async (req, res) => {
     try {
-        const { _id, userId, title, content } = req.body;
+        const {userId, title, content } = req.body;
+        const { id } = req.params;
 
-        const note = await notesSchema.findOne({ userId: userId, _id: _id });
+        const note = await notesSchema.findOne({ userId: userId, _id: id });
 
         if (!note) {
             return res.status(statusCode.NOT_FOUND).json({

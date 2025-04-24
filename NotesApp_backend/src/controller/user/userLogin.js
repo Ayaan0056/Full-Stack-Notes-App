@@ -10,9 +10,7 @@ export const userLogin = async (req, res) => {
         const { email, password } = req.body;
         const response = await userSchema.find({ email: email });
 
-        console.log("response: ", response);
-
-        // Check if user exists
+        
         if (response.length === 0) {
             return res.status(statusCode.BAD_REQUEST).json({
                 success: false,
@@ -20,9 +18,8 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        const user = response[0]; // Get the first user from the array
+        const user = response[0]; 
 
-        // Check if user is verified
         if (user.isVerified === false) {
             return res.status(statusCode.UNAUTHORIZED).json({
                 success: false,
@@ -30,9 +27,9 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        const userId = user._id; // Get user ID
+        const userId = user._id; 
 
-        // Check for active session
+        
         const data = await sessionSchema.find({ userId: userId });
         console.log("data: ", data);
         if (data.length > 0) {
@@ -42,8 +39,8 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        // Compare password
-        const isMatch = await bcrypt.compare(password, user.password); // Use user.password
+        
+        const isMatch = await bcrypt.compare(password, user.password); 
         if (!isMatch) {
             return res.status(statusCode.UNAUTHORIZED).json({
                 success: false,
@@ -51,10 +48,10 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        // Create a new session
+      
         const session = await sessionSchema.create({ userId: userId });
 
-        // Generate tokens
+        
         const accessToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: process.env.ACCESS_TOKEN_TIME });
         const refreshToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: process.env.REFRESH_TOKEN_TIME });
 

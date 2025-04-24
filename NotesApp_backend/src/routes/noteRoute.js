@@ -17,7 +17,7 @@ noteRoute.post('/createNote', authMiddleware, createNote);
 noteRoute.get('/getOneNote/:id', authMiddleware, getOneNote);
 noteRoute.get('/getAllNote', authMiddleware, getAllNote);
 noteRoute.delete('/deleteNote/:id', authMiddleware, deleteNote);
-noteRoute.put('/updateNote', authMiddleware, updateNote)
+noteRoute.put('/updateNote/:id', authMiddleware, updateNote)
 noteRoute.post('/searchNote', authMiddleware, searchNote);
 noteRoute.post('/paginateNote', authMiddleware, paginateNote);
 noteRoute.post('/sortNote', authMiddleware, sortNote)
