@@ -32,7 +32,7 @@ const NoteCard = ({ noteId, title, content }) => {
 
     return (
         <>
-            <div onClick={handleCardClick} className="flex flex-col bg-white rounded-lg shadow-lg  w-[257px] p-[30px] h-[220px] justify-between items-center cursor-pointer">
+            <div onClick={handleCardClick} className="flex flex-col bg-white rounded-lg shadow-lg  w-[257px] p-[30px] h-[220px] justify-between items-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
                 <div className="w-full">
                     <p className="text-center font-semibold font-man text-md cursor-default line-clamp-1 overflow-hidden break-words text-ellipsis mb-2">
                         {title}
