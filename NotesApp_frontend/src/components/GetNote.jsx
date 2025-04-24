@@ -5,7 +5,7 @@ import { toast, Toaster } from "react-hot-toast";
 import Modal from "./Modal";
 
 const GetNote = ({ isOpen, onClose, noteId, title, content }) => {
-    console.log('onclose: ', onClose)
+
     const fetchNote = async () => {
         const accessToken = localStorage.getItem('accessToken')
 

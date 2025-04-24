@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 
 import GetNote from "./GetNote";
+import DeleteNote from "./DeleteNote";
 
 const NoteCard = ({ noteId, title, content }) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-    async function editNote() {
+    async function editNote(e) {
+        // Stopping from bubbling up to the parent div
+        e.stopPropagation();
         console.log("Edit Button clicked");
     }
 
-    async function deleteNote() {
+    async function deleteNote(e) {
+        // Stopping from bubbling up to the parent div
+        e.stopPropagation();
         console.log("Delete Button clicked");
+        
+        setDeleteModalOpen(true);
+        
     }
 
     const handleCardClick = () =>{
@@ -51,6 +60,12 @@ const NoteCard = ({ noteId, title, content }) => {
                 noteId={noteId}
                 title={title}
                 content={content}
+            />
+
+            <DeleteNote 
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                noteId={noteId}
             />
         </>
     );
